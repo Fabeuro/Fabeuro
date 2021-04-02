@@ -1,0 +1,62 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Jump : MonoBehaviour
+{
+    public float jumpPower;
+    public float doubleJumpPower;
+    public float addedJumps;
+
+    private float currentJumps;
+
+    private bool isGrounded;
+
+    private Rigidbody rb;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+
+        currentJumps = addedJumps;
+    }
+
+    private void Update()
+    {
+        if(isGrounded == true)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                //jump
+                rb.AddForce(transform.up * jumpPower, ForceMode.Impulse);
+            }
+
+            currentJumps = addedJumps;
+        }
+        else
+        {
+            if (currentJumps > 0 && Input.GetKeyDown(KeyCode.Space))
+            {
+                //double jump
+                rb.AddForce(transform.up * doubleJumpPower, ForceMode.Impulse);
+                currentJumps -= 1;
+            }
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Ground")
+        {
+            isGrounded = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if(collision.gameObject.tag == "Ground")
+        {
+            isGrounded = false;
+        }
+    }
+}
